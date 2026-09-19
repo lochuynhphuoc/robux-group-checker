@@ -205,7 +205,26 @@
     .eyebrow span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 5px rgba(255,159,200,.14); }
     .header-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(48px, 8vw, 86px); line-height: .95; letter-spacing: -.07em; color: var(--text); background: none; -webkit-text-fill-color: initial; margin-bottom: 18px; }
     .header-text p { color: #aab9aa; font-size: clamp(15px, 2vw, 18px); max-width: 540px; line-height: 1.6; margin: 0; }
-    .rokit-footer { display: flex; align-items: center; justify-content: center; margin-top: auto; padding: 36px 0 10px; font-size: 12px; }
+    .rokit-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 48px;
+      padding: 12px 20px;
+
+      font-size: 12px;
+
+      background: transparent;
+      border: none;
+
+      z-index: 90;
+    }  
     .rokit-footer-link { color: var(--text-muted); font-weight: 600; text-decoration: none; transition: color .2s, transform .2s; }
     .rokit-footer-link:hover { color: var(--text); transform: translateX(2px); }
     .input-card.compact .header-text { max-height: 0; }
