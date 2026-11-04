@@ -14,8 +14,9 @@ Ro-Check is a web application that inspects the groups a Roblox account has join
 
 This project helps users:
 - enter a Roblox username or user ID
-- check a default group list stored in MongoDB
-- optionally inspect a custom group by link or ID
+- check all groups the account has joined without requiring a configured group list
+- optionally bulk check up to 100 groups by Roblox group link or ID
+- load results eight groups at a time with a More button
 - view joined and not-joined group status
 - calculate join duration and payout-eligibility warnings
 - manage default configuration through an admin panel
@@ -28,7 +29,7 @@ This project helps users:
 - grouping into Joined / Not Joined sections
 - built-in search across results
 - account and group retrieval through the Roblox API
-- admin control over the `group_config` MongoDB document
+- admin control over the legacy `group_config` MongoDB document
 
 ## Technology Stack
 
@@ -69,14 +70,19 @@ ADMIN_PASS=your_admin_password
 
 ### Variable Purpose
 
-- `MONGODB_URI`: connection string for MongoDB storage of group configuration
+- `MONGODB_URI`: connection string used by the admin panel and the shared request rate limiter
 - `ROBLOX_API_KEY`: key used for additional Roblox API requests
 - `ADMIN_PASS`: password used to manage group settings from the admin panel
 
 ## Notes
 
-- The `group_config` document stores the default group list
-- If no configuration exists, the application creates an initial default set
+- Leaving the group list blank checks every group the Roblox account has joined
+- Group links or IDs can be separated by new lines, commas, or semicolons
+- The optional group list checks the account's membership in those specific groups, including groups not joined
+- Results are loaded in batches of eight; each Roblox API request has an eight-second timeout, and join-date lookups run with limited concurrency
+- Each membership-check request has a one-minute overall timeout. Requests are limited to 20 per IP per minute and 120 per IP per hour using a shared MongoDB counter, so separate devices on the same public IP share the limit
+- Rate-limit records store an HMAC of the client IP (not the raw IP) and expire automatically after two hours. IP limits identify a network, not an individual, and can be bypassed by changing networks or using a VPN; use authentication or a managed WAF for stronger identity-based protection
+- The admin panel's `group_config` no longer limits checks on the main page
 - Some information, such as join dates or payout eligibility, may be limited based on Roblox API access rights
 - If `ROBLOX_API_KEY` is not configured, the app can still run, but some data may be incomplete
 

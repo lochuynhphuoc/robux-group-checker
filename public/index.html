@@ -26,15 +26,15 @@
     body { margin: 0; background-color: var(--bg); background-image: radial-gradient(ellipse at 50% -20%, #3a172b 0%, var(--bg) 50%); background-attachment: fixed; color: var(--text); font-family: 'Inter', sans-serif; line-height: 1.5; padding: 0 clamp(12px, 4vw, 20px) 60px; overflow-x: hidden; }
     .wrap { max-width: 1100px; margin: 0 auto; padding-top: 30px; }
     
-    .input-card { background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 24px; padding: clamp(20px, 5vw, 40px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-bottom: 25px; }
-    .input-card.compact { padding: 15px 25px; border-radius: 16px; background: rgba(17, 24, 39, 0.5); }
+    .input-card { --input-gutter: clamp(20px, 5vw, 40px); background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 24px; padding: var(--input-gutter); box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); margin-bottom: 25px; }
+    .input-card.compact { --input-gutter: 25px; padding: 15px var(--input-gutter); border-radius: 16px; background: rgba(17, 24, 39, 0.5); }
     
-    .header-text { text-align: center; margin-bottom: 30px; transition: all 0.4s ease; overflow: hidden; opacity: 1; }
+    .header-text { text-align: center; margin: 0 auto 30px; transition: all 0.4s ease; overflow: hidden; opacity: 1; }
     .header-text h1 { margin: 0; font-size: 38px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff 0%, #ffc0da 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .header-text p { color: var(--text-muted); margin: 8px 0 0; font-size: 16px; }
     .input-card.compact .header-text { max-height: 0; margin-bottom: 0; opacity: 0; transform: translateY(-10px) scale(0.95); }
 
-    .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; transition: all 0.4s ease; }
+    .form-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 15px; align-items: end; transition: all 0.4s ease; width: 100%; max-width: 760px; margin-inline: auto; }
     .input-group { display: flex; flex-direction: column; gap: 8px; }
     .input-group label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; color: #e5e7eb; transition: all 0.3s; }
     .badge { font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase;}
@@ -45,13 +45,37 @@
     
     .form-row input { height: 52px; width: 100%; background: var(--input-bg); color: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 0 40px 0 18px; font-size: 15px; font-family: inherit; transition: all 0.3s; }
     .form-row input:focus { outline: none; border-color: var(--border-focus); background: rgba(0, 0, 0, 0.6);}
+    .form-row .input-group:not(:focus-within) input { height: 42px; padding-left: 14px; font-size: 13px; }
+    .group-list-input { width: 100%; max-width: 760px; margin: 18px auto 0; padding: 17px; border: 1px solid rgba(255,159,200,.2); border-radius: 16px; background: rgba(10, 7, 10, .45); }
+    .group-list-input label { align-items: center; margin-bottom: 10px; transition: margin .25s; }
+    .group-input-wrapper { position: relative; }
+    .group-input-wrapper textarea { display: block; height: 112px; min-height: 112px; width: 100%; padding: 14px 48px 14px 16px; border: 1px solid rgba(255,159,200,.2); border-radius: 12px; outline: none; background: rgba(0,0,0,.32); color: var(--text); font: inherit; font-size: 14px; line-height: 1.55; resize: vertical; transition: height .25s, min-height .25s, padding .25s, border-color .2s, box-shadow .2s, background .2s; }
+    .group-input-wrapper textarea::placeholder { color: #8f7d88; }
+    .group-input-wrapper textarea:focus { border-color: var(--primary); background: rgba(0,0,0,.48); box-shadow: 0 0 0 3px rgba(255,159,200,.1); }
+    .group-input-wrapper .clear-btn { top: 10px; right: 10px; }
+    .group-field-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 9px; transition: margin .25s; }
+    .field-hint { color: var(--text-muted); font-size: 11px; line-height: 1.4; }
+    .group-count { flex: 0 0 auto; color: var(--primary); font-size: 11px; font-weight: 700; }
+    .group-list-input:not(:focus-within) { padding: 9px 12px; }
+    .group-list-input:not(:focus-within) label { margin-bottom: 4px; }
+    .group-list-input:not(:focus-within) .group-input-wrapper textarea { height: 42px; min-height: 42px; padding: 9px 42px 9px 12px; overflow: hidden; resize: none; font-size: 12px; }
+    .group-list-input:not(:focus-within) .group-field-meta { margin-top: 4px; }
+    .group-list-input:not(:focus-within) .field-hint { display: none; }
     
     .input-card.compact .form-row input { height: 45px; padding: 0 35px 0 16px; font-size: 14px; }
+    .input-card.compact .group-list-input { margin-top: 12px; padding: 11px; }
+    .input-card.compact .group-list-input label { display: none; }
+    .input-card.compact .group-input-wrapper textarea { min-height: 64px; padding: 9px 40px 9px 12px; font-size: 12px; }
+    .input-card.compact .group-field-meta { margin-top: 5px; }
+    .input-card.compact .form-row .input-group:not(:focus-within) input { height: 38px; }
+    .input-card.compact .group-list-input:not(:focus-within) { padding: 7px 10px; }
+    .input-card.compact .group-list-input:not(:focus-within) .group-input-wrapper textarea { height: 36px; min-height: 36px; }
 
     .clear-btn { position: absolute; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: none; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
     .clear-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
     .btn-check { height: 52px; min-width: 150px; background: linear-gradient(135deg, var(--primary), #ffb7d4); color: #28131e; border: none; border-radius: 12px; padding: 0 25px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 8px 15px var(--primary-glow); }
+    .btn-check { justify-self: end; }
     .btn-check:hover { transform: translateY(-2px); box-shadow: 0 12px 20px var(--primary-glow); filter: brightness(1.1); }
     .btn-check:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(0.5); }
     
@@ -197,10 +221,10 @@
     .admin-link { position: fixed; top: 24px; right: 28px; display: flex; align-items: center; gap: 7px; background: rgba(14, 9, 13, 0.86); color: var(--text-muted); padding: 9px 14px; border-radius: 10px; text-decoration: none; font-size: 12px; font-weight: 700; border: 1px solid var(--border); backdrop-filter: blur(16px); transition: color .2s, border-color .2s, background .2s; z-index: 100; }
     .admin-link:hover { background: rgba(255, 159, 200, 0.1); border-color: rgba(255, 159, 200, 0.45); color: var(--primary); }
 
-    .input-card { background: transparent; backdrop-filter: none; border: none; border-radius: 0; padding: clamp(28px, 6vw, 64px); box-shadow: none; margin-bottom: 30px; }
+    .input-card { --input-gutter: clamp(28px, 6vw, 64px); background: transparent; backdrop-filter: none; border: none; border-radius: 0; padding: var(--input-gutter); box-shadow: none; margin-bottom: 30px; }
     .input-card.compact { background: transparent; border: none; box-shadow: none; }
-    .input-card.compact { padding: 18px 24px; border-radius: 18px; border-color: var(--border); }
-    .header-text { text-align: left; max-width: 690px; margin-bottom: 42px; }
+    .input-card.compact { --input-gutter: 24px; padding: 18px var(--input-gutter); border-radius: 18px; border-color: var(--border); }
+    .header-text { text-align: left; width: 100%; max-width: 760px; margin: 0 auto 42px; }
     .eyebrow { display: flex; align-items: center; gap: 9px; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 17px; }
     .eyebrow span { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 5px rgba(255,159,200,.14); }
     .header-text h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(48px, 8vw, 86px); line-height: .95; letter-spacing: -.07em; color: var(--text); background: none; -webkit-text-fill-color: initial; margin-bottom: 18px; }
@@ -228,14 +252,18 @@
     .rokit-footer-link { color: var(--text-muted); font-weight: 600; text-decoration: none; transition: color .2s, transform .2s; }
     .rokit-footer-link:hover { color: var(--text); transform: translateX(2px); }
     .input-card.compact .header-text { max-height: 0; }
-    .form-row { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) auto; gap: 12px; }
+    .form-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
     .input-group { gap: 9px; }
     .input-group label { color: #cbd7c8; font-size: 12px; letter-spacing: .03em; }
     .badge { color: var(--primary); background: rgba(255,92,170,.1); border: 1px solid rgba(255,92,170,.2); }
     .form-row input { height: 56px; background: var(--input-bg); border-color: var(--border); border-radius: 13px; color: var(--text); }
     .form-row input::placeholder { color: #8f7d88; }
     .form-row input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 4px rgba(255,159,200,.12); background: #160d13; }
+    .group-list-input { background: rgba(27,13,22,.55); }
+    .group-input-wrapper textarea { border-color: rgba(255,159,200,.22); border-radius: 11px; }
     .btn-check { height: 56px; min-width: 154px; background: var(--primary); color: #28131e; border-radius: 13px; box-shadow: 0 10px 24px var(--primary-glow); font-size: 14px; }
+    .form-row:not(:has(#username:focus)) .btn-check { height: 42px; }
+    .input-card.compact .form-row:not(:has(#username:focus)) .btn-check { height: 38px; }
     .btn-check:hover { background: var(--primary-hover); box-shadow: 0 14px 32px var(--primary-glow); filter: none; }
     .clear-btn:hover { color: var(--primary); background: rgba(255,92,170,.1); }
 
@@ -253,6 +281,11 @@
     .pill { border-radius: 10px; padding: 9px 14px; box-shadow: none; font-size: 11px; letter-spacing: .04em; }
     .pill.ok { color: var(--success); border-color: rgba(255,159,200,.28); background: var(--success-bg); }
     .pill.no { color: var(--danger); border-color: rgba(255,146,126,.24); background: var(--danger-bg); }
+    .result-progress { margin: -12px 0 22px; color: var(--text-muted); font-size: 12px; }
+    .load-more-wrap { display: flex; justify-content: center; margin: 28px 0 12px; }
+    .load-more-btn { min-width: 190px; padding: 12px 20px; border: 1px solid rgba(255,159,200,.3); border-radius: 12px; background: rgba(255,159,200,.1); color: var(--primary); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
+    .load-more-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--primary); background: rgba(255,159,200,.18); }
+    .load-more-btn:disabled { opacity: .65; cursor: wait; }
     .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; letter-spacing: -.02em; color: var(--text); }
     .group-card { background: rgba(31, 15, 26, .58); backdrop-filter: blur(14px); border-color: rgba(255,190,220,.2); border-right-color: rgba(255,159,200,.24); border-radius: 14px; padding: 17px; }
     .group-card:hover { background: rgba(50, 18, 36, .9); border-color: rgba(255,92,170,.32); box-shadow: 0 14px 30px rgba(0,0,0,.2); }
@@ -266,19 +299,24 @@
       body { padding: 0 14px 56px; }
       .wrap { min-height: calc(100dvh - 56px); padding-top: 88px; }
       .admin-link { top: 16px; right: 16px; }
-      .input-card { padding: 28px 22px; }
+      .input-card { --input-gutter: 22px; padding: 28px var(--input-gutter); }
       .header-text { margin-bottom: 32px; }
       .form-row { grid-template-columns: 1fr; gap: 14px; }
       .btn-check { width: 100%; }
+      .group-list-input { margin-top: 14px; }
     }
 
     @media (max-width: 480px) {
       .wrap { min-height: calc(100dvh - 56px); padding-top: 76px; }
-      .input-card { padding: 25px 16px; border-radius: 21px; }
+      .input-card { --input-gutter: 16px; padding: 25px var(--input-gutter); border-radius: 21px; }
       .header-text h1 { font-size: 52px; }
       .header-text p { font-size: 14px; }
       .eyebrow { font-size: 9px; }
-      .input-card.compact { padding: 12px; }
+      .input-card.compact { --input-gutter: 12px; padding: var(--input-gutter); }
+      .group-list-input { padding: 12px; }
+      .group-field-meta { align-items: flex-start; }
+      .group-list-input:not(:focus-within) .group-input-wrapper textarea { height: 52px; min-height: 52px; padding: 8px 38px 8px 12px; font-size: 11px; line-height: 1.5; }
+      .input-card.compact .group-list-input:not(:focus-within) .group-input-wrapper textarea { height: 48px; min-height: 48px; }
     }
   </style>
 </head>
@@ -307,20 +345,23 @@
           </div>
         </div>
         
-        <div class="input-group">
-          <label>Custom Group <span class="badge">Optional</span></label>
-          <div class="input-wrapper">
-            <input id="customGroup" placeholder="Link or ID (Blank for default)" autocomplete="off" oninput="handleInput('customGroup')" onkeydown="if (event.key === 'Enter') check()">
-            <button class="clear-btn" id="clear-customGroup" onclick="clearField('customGroup')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          </div>
-        </div>
-
         <button id="check" class="btn-check" onclick="check()">
           <span id="btn-text">Check Now</span>
           <div id="btn-spinner" class="loading-spinner" style="display: none;"></div>
         </button>
+      </div>
+      <div class="input-group group-list-input">
+        <label for="groupIds">Group Links or IDs <span class="badge">Optional</span></label>
+        <div class="group-input-wrapper">
+          <textarea id="groupIds" rows="3" placeholder="Paste group links or IDs, one per line. Leave blank to check all groups the user has joined." oninput="handleInput('groupIds')"></textarea>
+          <button class="clear-btn" id="clear-groupIds" onclick="clearField('groupIds')" aria-label="Clear group links and IDs">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="group-field-meta">
+          <small class="field-hint">Separate entries with a new line, comma, or semicolon. Up to 100 groups per check.</small>
+          <span id="group-count" class="group-count">0 groups</span>
+        </div>
       </div>
     </div>
     
@@ -339,24 +380,31 @@
     const btnText = $('#btn-text');
     const btnSpinner = $('#btn-spinner');
     const inputCard = $('#input-card');
+    let currentResults = null;
+    let currentCheck = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedUser = sessionStorage.getItem('roblox_username');
-      const savedGroup = sessionStorage.getItem('roblox_customGroup');
+      const savedGroup = sessionStorage.getItem('roblox_groupIds') || sessionStorage.getItem('roblox_customGroup');
       if (savedUser) {
         $('#username').value = savedUser;
         toggleClearBtn('username');
         if (savedGroup) {
-          $('#customGroup').value = savedGroup;
-          toggleClearBtn('customGroup');
+          $('#groupIds').value = savedGroup;
+          sessionStorage.setItem('roblox_groupIds', savedGroup);
+          sessionStorage.removeItem('roblox_customGroup');
+          toggleClearBtn('groupIds');
         }
+        updateGroupCount();
         check(); 
       }
     });
 
     function handleInput(id) {
       sessionStorage.setItem('roblox_' + id, $('#' + id).value.trim());
+      if (id === 'groupIds') sessionStorage.removeItem('roblox_customGroup');
       toggleClearBtn(id);
+      if (id === 'groupIds') updateGroupCount();
       if (id === 'username' && $('#username').value.trim() === '') resetUI();
     }
 
@@ -364,15 +412,24 @@
       const el = $('#' + id);
       el.value = '';
       sessionStorage.removeItem('roblox_' + id);
+      if (id === 'groupIds') sessionStorage.removeItem('roblox_customGroup');
       toggleClearBtn(id);
+      if (id === 'groupIds') updateGroupCount();
       if (id === 'username') resetUI();
-      if (id === 'customGroup' && $('#username').value.trim() !== '') check();
+      if (id === 'groupIds' && $('#username').value.trim() !== '') check();
       el.focus();
     }
 
     function toggleClearBtn(id) {
       const btn = $('#clear-' + id);
       btn.style.display = $('#' + id).value.trim() !== '' ? 'flex' : 'none';
+    }
+
+    function updateGroupCount() {
+      const entries = $('#groupIds').value.trim().split(/[\s,;]+/).filter(Boolean);
+      const count = $('#group-count');
+      count.textContent = `${entries.length} group${entries.length === 1 ? '' : 's'}`;
+      count.style.color = entries.length > 100 ? 'var(--danger)' : '';
     }
 
     function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -386,14 +443,13 @@
       }
     };
 
-    function resetUI() { out.innerHTML = ''; stickyProfile.innerHTML = ''; inputCard.classList.remove('compact'); }
-
-    window.checkCustomGroup = function(groupId) {
-      $('#customGroup').value = groupId;
-      handleInput('customGroup');
-      check();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    function resetUI() {
+      out.innerHTML = '';
+      stickyProfile.innerHTML = '';
+      currentResults = null;
+      currentCheck = null;
+      inputCard.classList.remove('compact');
+    }
 
     window.filterGroups = function() {
       const q = $('#group-search').value.toLowerCase();
@@ -414,24 +470,16 @@
       });
     };
 
-    window.toggleOtherGroups = function() {
-      const grid = document.getElementById('other-groups-grid');
-      const icon = document.getElementById('other-toggle-icon');
-      if (grid.style.display === 'none') {
-        grid.style.display = 'grid';
-        icon.classList.add('open');
-        setTimeout(() => { window.scrollToSection('section-other'); }, 100);
-      } else {
-        grid.style.display = 'none';
-        icon.classList.remove('open');
-      }
-    };
-
     function render(d) {
       let joined = d.groups.filter(g => g.joined);
-      joined.sort((a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)); 
-
+      joined.sort((a, b) => {
+        if (!a.joinedAt || !b.joinedAt) return 0;
+        return new Date(b.joinedAt) - new Date(a.joinedAt);
+      });
       let no = d.groups.filter(g => !g.joined);
+      const joinedCount = joined.length;
+      const loadedCount = d.groups.length;
+      const searchQuery = $('#group-search')?.value || '';
 
       stickyProfile.innerHTML = `
         <div class="user-profile">
@@ -449,10 +497,11 @@
       `;
       html += `
         <div class="summary">
-          <div class="pill ok" onclick="scrollToSection('section-joined')"><span class="icon-ok">✓</span> JOINED ${d.joinedCount}/${d.total}</div>
-          <div class="pill no" onclick="scrollToSection('section-not-joined')"><span class="icon-no">✗</span> NOT JOINED ${d.total - d.joinedCount}/${d.total}</div>
+          <div class="pill ok" onclick="scrollToSection('section-joined')"><span class="icon-ok">✓</span> JOINED ${joinedCount}/${loadedCount}</div>
+          <div class="pill no" onclick="scrollToSection('section-not-joined')"><span class="icon-no">✗</span> NOT JOINED ${loadedCount - joinedCount}/${loadedCount}</div>
         </div>
       `;
+      html += `<div class="result-progress">Showing ${loadedCount} of ${d.totalGroups} groups</div>`;
       if (d.dateWarning) html += `<div class="warning-box"><span>⚠️</span> ${esc(d.dateWarning)}</div>`;
 
       const renderCard = (g, isJoined) => {
@@ -507,10 +556,17 @@
          if (joined.length) html += `<div id="section-joined" class="section-title">Joined Groups</div><div class="grid">${joined.map(g => renderCard(g, true)).join('')}</div>`;
          if (no.length) html += `<div id="section-not-joined" class="section-title" style="margin-top: 40px;">Not Joined</div><div class="grid" style="opacity: 0.9;">${no.map(g => renderCard(g, false)).join('')}</div>`;
       }
+      if (d.hasMore) {
+        html += `<div class="load-more-wrap"><button id="load-more" class="load-more-btn" onclick="loadMore()">More groups (${d.totalGroups - loadedCount} remaining)</button></div>`;
+      }
       html += `</div>`;
       out.innerHTML = html;
       setupNameMarquees(out);
       setupPayoutMarquees(out);
+      if (searchQuery && $('#group-search')) {
+        $('#group-search').value = searchQuery;
+        window.filterGroups();
+      }
     }
 
     function setupNameMarquees(root) {
@@ -531,77 +587,30 @@
       });
     }
 
-    async function loadOtherGroups(userId, monitoredGroups) {
-      try {
-        const monitoredIds = monitoredGroups.map(g => g.id.toString());
-        const res = await fetch(`https://groups.roproxy.com/v1/users/${userId}/groups/roles`);
-        if (!res.ok) return;
-        const data = await res.json();
-        const otherGroups = (data.data || []).filter(g => !monitoredIds.includes(g.group.id.toString()));
-        
-        if (otherGroups.length > 0) {
-          const container = document.createElement('div');
-          
-          let html = `
-            <div id="section-other" class="section-title toggle-header" onclick="toggleOtherGroups()" style="margin-top: 40px; color: #e0b8cb;">
-              <span>Other Groups (${otherGroups.length})</span>
-              <svg id="other-toggle-icon" class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-            <div id="other-groups-grid" class="grid" style="display: none; opacity: 0.75;">
-          `;
-          
-          html += otherGroups.map(g => `
-            <div onclick="checkCustomGroup('${g.group.id}')" class="group-card is-joined" style="align-items: center; padding: 12px; cursor: pointer;">
-              <img src="https://tr.rbxcdn.com/default-group-icon" data-other-id="${g.group.id}" class="other-group-icon" alt="Group" style="width: 45px; height: 45px; border-radius: 10px; margin-right: 12px; margin-bottom: 0;">
-              <div class="g-info">
-                <div class="g-name" style="font-size: 14px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f0d5e1;"><span class="name-text">${esc(g.group.name)}</span></div>
-                <div class="g-meta" style="color: #b895a7;">Role: ${esc(g.role.name)}</div>
-              </div>
-            </div>
-          `).join('');
-          html += `</div>`;
-          container.innerHTML = html;
-          setupNameMarquees(container);
-          setupPayoutMarquees(container);
-          
-          const target = document.getElementById('scroll-target');
-          if (target) target.appendChild(container);
-          if ($('#group-search') && $('#group-search').value.trim() !== '') filterGroups();
-
-          const ids = otherGroups.map(g => g.group.id);
-          for (let i = 0; i < ids.length; i += 10) {
-            const chunk = ids.slice(i, i + 10);
-            fetch(`https://thumbnails.roproxy.com/v1/groups/icons?groupIds=${chunk.join(',')}&size=150x150&format=Png&isCircular=false`)
-              .then(r => r.json())
-              .then(d => {
-                if(d.data) d.data.forEach(item => {
-                  const img = document.querySelector(`.other-group-icon[data-other-id="${item.targetId}"]`);
-                  if(img) img.src = item.imageUrl;
-                });
-              }).catch(()=>{});
-            await new Promise(r => setTimeout(r, 500));
-          }
-        }
-      } catch (e) { console.error("Error loading other groups", e); }
-    }
-
     async function check() {
       const username = $('#username').value.trim();
-      const customGroup = $('#customGroup').value.trim();
+      const groupIds = $('#groupIds').value.trim();
       if (!username) { $('#username').focus(); return; }
 
+      currentResults = null;
+      currentCheck = { username, groupIds };
       btn.disabled = true; btnText.innerText = 'Checking '; btnSpinner.style.display = 'inline-block';
       out.innerHTML = ''; stickyProfile.innerHTML = ''; 
 
       try {
-        const r = await fetch('/api/index', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, customGroup }) });
+        const r = await fetch('/api/index', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, groupIds, offset: 0 }),
+          signal: AbortSignal.timeout(60000)
+        });
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Request failed');
         
+        currentResults = d;
         inputCard.classList.add('compact');
         render(d);
         setTimeout(() => { window.scrollToSection('scroll-target'); }, 550);
-        if (!customGroup) loadOtherGroups(d.user.id, d.groups);
 
       } catch (e) {
         out.innerHTML = `<div class="error-box"><b>Error:</b> ${esc(e.message)}</div>`;
@@ -610,6 +619,41 @@
         btn.disabled = false; btnText.innerText = 'Check Now'; btnSpinner.style.display = 'none';
       }
     }
+
+    window.loadMore = async function() {
+      const moreButton = $('#load-more');
+      if (!currentResults || !currentCheck || !moreButton || moreButton.disabled) return;
+
+      moreButton.disabled = true;
+      moreButton.textContent = 'Checking next 8 groups...';
+      try {
+        const r = await fetch('/api/index', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...currentCheck, offset: currentResults.nextOffset }),
+          signal: AbortSignal.timeout(60000)
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error || 'Request failed');
+
+        currentResults = {
+          ...currentResults,
+          groups: [...currentResults.groups, ...d.groups],
+          totalGroups: d.totalGroups,
+          hasMore: d.hasMore,
+          nextOffset: d.nextOffset,
+          dateWarning: d.dateWarning || currentResults.dateWarning
+        };
+        render(currentResults);
+      } catch (e) {
+        moreButton.disabled = false;
+        moreButton.textContent = 'Retry loading next 8 groups';
+        const error = document.createElement('div');
+        error.className = 'error-box';
+        error.innerHTML = `<b>Error:</b> ${esc(e.name === 'TimeoutError' ? 'The request timed out. Please try again.' : e.message)}`;
+        out.prepend(error);
+      }
+    };
 
   </script>
 </body>
