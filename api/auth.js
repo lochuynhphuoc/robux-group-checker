@@ -11,6 +11,7 @@ const SESSION_COOKIE = 'rocheck_session';
 const SESSION_DAYS = 30;
 const MAX_SAVED_LISTS = 20;
 const MAX_GROUPS_PER_LIST = 100;
+const ROBLOX_TIMEOUT_MS = 8000;
 
 let clientPromise;
 let indexesPromise;
@@ -80,9 +81,28 @@ function normalizeGroups(value) {
   if (!Array.isArray(value) || !value.length || value.length > MAX_GROUPS_PER_LIST) {
     throw new Error(`Choose between 1 and ${MAX_GROUPS_PER_LIST} groups.`);
   }
+
   const ids = [...new Set(value.map(id => Number(id)))];
   if (ids.some(id => !Number.isSafeInteger(id) || id <= 0)) throw new Error('Group IDs are invalid.');
   return ids;
+}
+
+async function validateGroupIds(groupIds) {
+  const response = await fetch(`https://groups.roblox.com/v2/groups?groupIds=${groupIds.join(',')}`, {
+    signal: AbortSignal.timeout(ROBLOX_TIMEOUT_MS)
+  });
+  if (!response.ok) throw new Error('Roblox group validation is temporarily unavailable.');
+  const data = await response.json();
+  const groups = new Map((data.data || []).map(group => [group.id, {
+    id: group.id,
+    name: group.name,
+    memberCount: group.memberCount,
+    publicEntryAllowed: group.publicEntryAllowed
+  }]));
+  return {
+    valid: groupIds.filter(id => groups.has(id)).map(id => groups.get(id)),
+    invalid: groupIds.filter(id => !groups.has(id))
+  };
 }
 
 function hashPassword(password, salt) {
@@ -106,9 +126,11 @@ function tokenHash(token) {
   return createHash('sha256').update(token).digest('hex');
 }
 
-function setSessionCookie(res, token) {
+function setSessionCookie(req, res, token) {
+  const isLocalhost = /(^|:)localhost(?::|$)|(^|:)127\.0\.0\.1(?::|$)/i.test(req.headers?.host || '');
+  const secure = isLocalhost ? '' : ' Secure;';
   res.setHeader('Set-Cookie',
-    `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_DAYS * 86400}`);
+    `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly;${secure} SameSite=Lax; Path=/; Max-Age=${SESSION_DAYS * 86400}`);
 }
 
 async function getCurrentUser(req, collections) {
@@ -172,7 +194,7 @@ module.exports = async function handler(req, res) {
         createdAt: new Date(),
         expiresAt: new Date(Date.now() + SESSION_DAYS * 86400 * 1000)
       });
-      setSessionCookie(res, token);
+      setSessionCookie(req, res, token);
       return res.status(200).json({ user: publicUser(user) });
     }
 
@@ -180,10 +202,23 @@ module.exports = async function handler(req, res) {
     if (!user) return res.status(401).json({ error: 'Please log in to manage saved groups.' });
     if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
 
+    if (action === 'validate-groups') {
+      const groupIds = normalizeGroups(req.body?.groupIds);
+      return res.status(200).json(await validateGroupIds(groupIds));
+    }
+
     if (action === 'save-list') {
       const name = typeof req.body?.name === 'string' ? req.body.name.trim().slice(0, 40) : '';
       if (!name) return res.status(400).json({ error: 'List name is required.' });
       const groupIds = normalizeGroups(req.body?.groupIds);
+      const validation = await validateGroupIds(groupIds);
+      if (validation.invalid.length) {
+        return res.status(400).json({
+          error: `These Roblox groups were not found: ${validation.invalid.join(', ')}.`,
+          invalid: validation.invalid,
+          valid: validation.valid
+        });
+      }
       const list = {
         id: randomBytes(8).toString('hex'),
         name,

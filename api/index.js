@@ -234,6 +234,7 @@ module.exports = async function handler(req, res) {
     const userAvatar = userAvatarRes?.data?.[0]?.imageUrl || '';
     const joinedIds = new Set((ug.data || []).map(x => x.group?.id).filter(Boolean));
     const includeOther = body.includeOther === true && Array.isArray(groupIdsInput);
+    const isSavedList = typeof body.savedListId === 'string' && body.savedListId.length > 0;
     const allGroupIds = groupIdsInput
       ? includeOther
         ? [...groupIdsInput, ...Array.from(joinedIds).filter(id => !groupIdsInput.includes(id))]
@@ -298,9 +299,10 @@ module.exports = async function handler(req, res) {
       totalGroups,
       hasMore: offset + groups.length < totalGroups,
       nextOffset: offset + groups.length,
-      isCustom: groupIdsInput?.length === 1 && totalGroups === 1 && !includeOther,
+      isCustom: groupIdsInput?.length === 1 && totalGroups === 1 && !includeOther && !isSavedList,
       savedGroupIds: groupIdsInput || [],
       includesOther: includeOther,
+      isSavedList,
       dateWarning
     });
   } catch (e) {
