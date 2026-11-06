@@ -7,6 +7,7 @@ const ROBLOX_API_KEY = process.env.ROBLOX_API_KEY || "";
 const ROBLOX_REQUEST_TIMEOUT_MS = 8000;
 const CHECK_TIMEOUT_MS = 60_000;
 const GROUPS_PER_PAGE = 8;
+const SMALL_SAVED_LIST_PAGE_SIZE = 20;
 const JOIN_DATE_CONCURRENCY = 3;
 const RATE_LIMIT_PER_MINUTE = 20;
 const RATE_LIMIT_PER_HOUR = 120;
@@ -191,9 +192,14 @@ module.exports = async function handler(req, res) {
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
+    const isSavedList = typeof body.savedListId === 'string' && body.savedListId.length > 0;
+    const includeOther = body.includeOther === true && Array.isArray(groupIdsInput);
+    const pageSize = isSavedList && Array.isArray(groupIdsInput) && groupIdsInput.length <= SMALL_SAVED_LIST_PAGE_SIZE
+      ? SMALL_SAVED_LIST_PAGE_SIZE
+      : GROUPS_PER_PAGE;
     const offset = Number(body.offset ?? 0);
-    if (!Number.isSafeInteger(offset) || offset < 0 || offset % GROUPS_PER_PAGE !== 0) {
-      return res.status(400).json({ error: `Offset must be a non-negative multiple of ${GROUPS_PER_PAGE}.` });
+    if (!Number.isSafeInteger(offset) || offset < 0 || offset % pageSize !== 0) {
+      return res.status(400).json({ error: `Offset must be a non-negative multiple of ${pageSize}.` });
     }
 
     try {
@@ -233,15 +239,13 @@ module.exports = async function handler(req, res) {
 
     const userAvatar = userAvatarRes?.data?.[0]?.imageUrl || '';
     const joinedIds = new Set((ug.data || []).map(x => x.group?.id).filter(Boolean));
-    const includeOther = body.includeOther === true && Array.isArray(groupIdsInput);
-    const isSavedList = typeof body.savedListId === 'string' && body.savedListId.length > 0;
     const allGroupIds = groupIdsInput
       ? includeOther
         ? [...groupIdsInput, ...Array.from(joinedIds).filter(id => !groupIdsInput.includes(id))]
         : groupIdsInput
       : Array.from(joinedIds);
     const totalGroups = allGroupIds.length;
-    const groupIdsToCheck = allGroupIds.slice(offset, offset + GROUPS_PER_PAGE);
+    const groupIdsToCheck = allGroupIds.slice(offset, offset + pageSize);
     if (!totalGroups) {
       return res.status(200).json({
         user: { id: userId, name: userData.name, displayName: userData.displayName, avatar: userAvatar },

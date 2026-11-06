@@ -796,7 +796,7 @@
       if (!currentResults || !currentCheck || !moreButton || moreButton.disabled) return;
 
       moreButton.disabled = true;
-      moreButton.textContent = 'Checking next 8 groups...';
+      moreButton.textContent = 'Checking more groups...';
       try {
         const r = await fetch('/api/index', {
           method: 'POST',
