@@ -233,7 +233,12 @@ module.exports = async function handler(req, res) {
 
     const userAvatar = userAvatarRes?.data?.[0]?.imageUrl || '';
     const joinedIds = new Set((ug.data || []).map(x => x.group?.id).filter(Boolean));
-    const allGroupIds = groupIdsInput || Array.from(joinedIds);
+    const includeOther = body.includeOther === true && Array.isArray(groupIdsInput);
+    const allGroupIds = groupIdsInput
+      ? includeOther
+        ? [...groupIdsInput, ...Array.from(joinedIds).filter(id => !groupIdsInput.includes(id))]
+        : groupIdsInput
+      : Array.from(joinedIds);
     const totalGroups = allGroupIds.length;
     const groupIdsToCheck = allGroupIds.slice(offset, offset + GROUPS_PER_PAGE);
     if (!totalGroups) {
@@ -293,7 +298,9 @@ module.exports = async function handler(req, res) {
       totalGroups,
       hasMore: offset + groups.length < totalGroups,
       nextOffset: offset + groups.length,
-      isCustom: groupIdsInput?.length === 1 && totalGroups === 1,
+      isCustom: groupIdsInput?.length === 1 && totalGroups === 1 && !includeOther,
+      savedGroupIds: groupIdsInput || [],
+      includesOther: includeOther,
       dateWarning
     });
   } catch (e) {

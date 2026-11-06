@@ -28,6 +28,9 @@ This project helps users:
 - user profile and avatar display
 - grouping into Joined / Not Joined sections
 - built-in search across results
+- optional web accounts with secure sessions
+- saved group lists that can be selected as the default check set
+- optional display of other groups outside the selected saved list
 - account and group retrieval through the Roblox API
 - admin control over the legacy `group_config` MongoDB document
 
@@ -74,6 +77,11 @@ ADMIN_PASS=your_admin_password
 - `ROBLOX_API_KEY`: key used for additional Roblox API requests
 - `ADMIN_PASS`: password used to manage group settings from the admin panel
 
+Account data is stored in the `rocheck.users` and `rocheck.sessions` MongoDB collections.
+Passwords are stored as salted scrypt hashes and sessions use an HttpOnly cookie. Accounts
+are optional: guests can continue checking groups without registering, while signed-in
+users can save up to 20 named lists of up to 100 group IDs each.
+
 ## Notes
 
 - Leaving the group list blank checks every group the Roblox account has joined
@@ -83,6 +91,8 @@ ADMIN_PASS=your_admin_password
 - Each membership-check request has a one-minute overall timeout. Requests are limited to 20 per IP per minute and 120 per IP per hour using a shared MongoDB counter, so separate devices on the same public IP share the limit
 - Rate-limit records store an HMAC of the client IP (not the raw IP) and expire automatically after two hours. IP limits identify a network, not an individual, and can be bypassed by changing networks or using a VPN; use authentication or a managed WAF for stronger identity-based protection
 - The admin panel's `group_config` no longer limits checks on the main page
+- The main page explains the account workflow and lets signed-in users choose a saved list,
+  save the current group input, delete lists, and include memberships outside the saved list
 - Some information, such as join dates or payout eligibility, may be limited based on Roblox API access rights
 - If `ROBLOX_API_KEY` is not configured, the app can still run, but some data may be incomplete
 
