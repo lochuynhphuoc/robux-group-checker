@@ -367,7 +367,7 @@
         <div class="input-group">
           <label>Player Username or ID</label>
           <div class="input-wrapper">
-            <input id="username" placeholder="Username or ID" autocomplete="off" oninput="handleInput('username')" onkeydown="if (event.key === 'Enter') check()">
+            <input id="username" name="roblox-username" placeholder="Username or ID" autocomplete="on" oninput="handleInput('username')" onkeydown="if (event.key === 'Enter') check()">
             <button class="clear-btn" id="clear-username" onclick="clearField('username')">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
@@ -400,7 +400,7 @@
         </div>
       </div>
     </div>
-    <div id="account-tip" class="tips-box"><strong>Tip:</strong> You can check without an account. <a href="http://localhost:3000/account.html">Create one</a> when you want to save frequently checked groups; next time, select a saved list, enter a Roblox username, and press Check Now. “Include other groups” also shows memberships outside your saved list.</div>
+    <div id="account-tip" class="tips-box"><strong>Tip:</strong> You can check without an account. <a href="/account.html">Create one</a> when you want to save frequently checked groups; next time, select a saved list, enter a Roblox username, and press Check Now. “Include other groups” also shows memberships outside your saved list.</div>
     
     <div id="sticky-profile" class="sticky-profile"></div>
     <div id="out"></div>

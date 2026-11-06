@@ -19,8 +19,9 @@
     .tab.active { color: #28131e; background: var(--pink); }
     label { display: block; margin: 14px 0 7px; color: var(--muted); font-size: 12px; font-weight: 700; }
     .password-wrap { position: relative; }
-    .password-wrap input { padding-right: 50px; }
-    .password-toggle { position: absolute; top: 0; right: 0; width: 48px; height: 46px; padding: 0; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+    .password-wrap input { padding-right: 44px; }
+    .password-toggle { position: absolute; top: 7px; right: 8px; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; outline: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .password-toggle:focus, .password-toggle:focus-visible { outline: 0; box-shadow: none; }
     .password-toggle:hover { color: var(--pink); }
     .password-toggle svg { width: 19px; height: 19px; }
     input { width: 100%; height: 46px; padding: 0 13px; border: 1px solid var(--border); border-radius: 10px; color: var(--text); background: rgba(0,0,0,.32); font: inherit; }
@@ -60,8 +61,8 @@
       <input id="username" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+">
       <label for="password">Password</label>
       <div class="password-wrap">
-        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
-        <button class="password-toggle" type="button" aria-label="Show password" title="Show password" onclick="togglePassword('password', this)">
+        <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required>
+        <button class="password-toggle" type="button" aria-label="Show password" title="Show password" onpointerdown="event.preventDefault(); event.stopPropagation(); togglePassword('password', this)" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); togglePassword('password', this); }">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
         </button>
       </div>
@@ -69,7 +70,7 @@
         <label for="repeat-password">Repeat password</label>
         <div class="password-wrap">
           <input id="repeat-password" name="repeat-password" type="password" autocomplete="off" minlength="8" maxlength="128">
-          <button class="password-toggle" type="button" aria-label="Show repeated password" title="Show repeated password" onclick="togglePassword('repeat-password', this)">
+          <button class="password-toggle" type="button" aria-label="Show repeated password" title="Show repeated password" onpointerdown="event.preventDefault(); event.stopPropagation(); togglePassword('repeat-password', this)" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); togglePassword('repeat-password', this); }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           </button>
         </div>
